@@ -51,4 +51,107 @@ module.exports = {
       throw new Error("Invalid Email or Password");
     }
   }),
+  addVehicle: asyncHandler(async (req, res) => {
+    // console.log(req.body);
+    const { name, description, price, quantity, manufacturer, model } =
+      req.body;
+    const filenames = req.files.map((file) => file.filename);
+    const primaryImage = filenames[0];
+    const secondaryImages = req.files.map((file) => file.filename);
+    // console.log(secondaryImages);
+    try {
+      const newVehicle = new Vehicle({
+        name,
+        description,
+        price,
+        availableQuantity: quantity,
+        manufacturer,
+        model,
+        primaryImage,
+        secondaryImages,
+      });
+      const savedVehicle = await newVehicle.save();
+      // console.log(savedVehicle);
+      res.status(201).json(savedVehicle);
+    } catch (error) {
+      console.log(error.message);
+      res.status(500).json({ message: "Failed to add the vehicle." });
+    }
+  }),
+  getAllVehicles: asyncHandler(async (req, res) => {
+    try {
+      const vehicles = await Vehicle.find();
+      if (!vehicles) {
+        res.status(404).json({ message: "No vehicles found." });
+      } else {
+        res.status(200).json(vehicles);
+      }
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: "Failed to fetch vehicles." });
+    }
+  }),
+  getVehicle: asyncHandler(async (req, res) => {
+    try {
+      const { id } = req.params;
+      const vehicle = await Vehicle.findById(id);
+      if (!vehicle) {
+        return res.status(404).json({ message: "Vehicle not found." });
+      }
+      res.status(200).json(vehicle);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: "Failed to fetch vehicle details." });
+    }
+  }),
+  deleteVehicle: asyncHandler(async (req, res) => {
+    try {
+      const { id } = req.params;
+      const vehicle = await Vehicle.findById(id);
+      if (!vehicle) {
+        return res.status(404).json({ message: "Vehicle not found." });
+      }
+      const deletedVehicle = await Vehicle.deleteOne({ _id: id });
+      if (deletedVehicle.deletedCount === 1) {
+        res.status(200).json({ message: "Vehicle deleted successfully." });
+      } else {
+        res.status(500).json({ message: "Failed to delete vehicle." });
+      }
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: "Failed to delete vehicle." });
+    }
+  }),
+  editVehicle: asyncHandler(async (req, res) => {
+    const { id } = req.params;
+    const { name, description, price, quantity, manufacturer, model } =
+      req.body;
+    console.log(req.files);
+    const filenames = req.files.map((file) => file.filename);
+    const primaryImage = filenames[0];
+    const secondaryImages = req.files.map((file) => file.filename);
+    try {
+      const updatedVehicle = await Vehicle.findByIdAndUpdate(
+        id,
+        {
+          name,
+          description,
+          price,
+          availableQuantity: quantity,
+          manufacturer,
+          model,
+          primaryImage,
+          secondaryImages,
+        },
+        { new: true }
+      );
+      if (!updatedVehicle) {
+        return res.status(404).json({ message: "Vehicle not found" });
+      }
+      res.status(200).json(updatedVehicle);
+    } catch (error) {
+      console.error(error.message);
+      res.status(500).json({ message: "Failed to update the vehicle." });
+    }
+  }),
 };

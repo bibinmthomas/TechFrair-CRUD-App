@@ -1,6 +1,14 @@
 const express = require("express");
 const verifyToken = require("../utils/verifyToken");
-const { registerUser, authUser } = require("../controller/adminController");
+const {
+  registerUser,
+  authUser,
+  addVehicle,
+  deleteVehicle,
+  editVehicle,
+  getAllVehicles,
+  getVehicle,
+} = require("../controller/adminController");
 const multer = require("multer");
 
 const router = express.Router();
@@ -18,5 +26,10 @@ const upload = multer({ storage: storage });
 
 router.post("/register", registerUser);
 router.post("/login", authUser);
+router.post("/addVehicle", upload.array("recfile", 4), addVehicle);
+router.get("/getVehicles", getAllVehicles);
+router.get("/getVehicle/:id", getVehicle);
+router.patch("/editVehicle/:id",upload.array("recfile", 4), editVehicle);
+router.delete("/deleteVehicle/:id", deleteVehicle);
 
 module.exports = router;

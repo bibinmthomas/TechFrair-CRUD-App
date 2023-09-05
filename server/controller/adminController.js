@@ -22,9 +22,10 @@ module.exports = {
         // console.log(user);
         const token = await generateToken(user._id);
         return res.status(201).json({
-          name: user.name,
-          email: user.email,
-          token: token,
+          // name: user.name,
+          // email: user.email,
+          // token: token,
+          message: "Registration Complete",
         });
       } else {
         return res.status(400).json({ error: "Registration Failed" });
@@ -46,7 +47,7 @@ module.exports = {
         token: token,
       });
     } else {
-      res.status(404).json({message:"Invalid EmailID or Password"});
+      res.status(404).json({ message: "Invalid EmailID or Password" });
       throw new Error("Invalid Email or Password");
     }
   }),

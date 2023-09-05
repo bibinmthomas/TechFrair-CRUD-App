@@ -13,8 +13,13 @@ function Dashboard() {
   );
   const { userInfo } = useSelector((state) => state.login);
 
-  const filteredVehicles = vehicles.filter((vehicle) =>
-    vehicle.name.toLowerCase().includes(searchVehicle.toLowerCase())
+  const filteredVehicles = vehicles.filter(
+    (vehicle) =>
+      vehicle.name.toLowerCase().includes(searchVehicle.toLowerCase()) ||
+      vehicle.manufacturer
+        .toLowerCase()
+        .includes(searchVehicle.toLowerCase()) ||
+      vehicle.model.toLowerCase().includes(searchVehicle.toLowerCase())
   );
 
   useEffect(() => {
@@ -34,7 +39,7 @@ function Dashboard() {
   };
   const handleDelete = async (vehicleId) => {
     await dispatch(deleteVehicle(vehicleId));
-    navigate("/");
+    dispatch(fetchVehicles());
   };
 
   return (
@@ -136,7 +141,9 @@ function Dashboard() {
                     {vehicle.name}
                   </p>
                   <button
-                    onClick={() => handleDelete(vehicle._id)}
+                    onClick={() => {
+                      handleDelete(filteredVehicles[index]._id);
+                    }}
                     class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-md"
                   >
                     <svg
@@ -155,6 +162,12 @@ function Dashboard() {
                     </svg>
                     Delete
                   </button>
+                </div>
+                <div className=" flex justify-between p-1">
+                  <p class="uppercase text-sm text-gray-400">
+                    {vehicle.manufacturer}
+                  </p>
+                  <p class="uppercase text-sm text-gray-400">{vehicle.model}</p>
                 </div>
                 <div class="prod-img">
                   <img

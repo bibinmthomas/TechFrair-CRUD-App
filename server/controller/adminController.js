@@ -19,12 +19,8 @@ module.exports = {
         password,
       });
       if (user) {
-        // console.log(user);
         const token = await generateToken(user._id);
         return res.status(201).json({
-          // name: user.name,
-          // email: user.email,
-          // token: token,
           message: "Registration Complete",
         });
       } else {
@@ -52,13 +48,11 @@ module.exports = {
     }
   }),
   addVehicle: asyncHandler(async (req, res) => {
-    // console.log(req.body);
     const { name, description, price, quantity, manufacturer, model } =
       req.body;
     const filenames = req.files.map((file) => file.filename);
     const primaryImage = filenames[0];
     const secondaryImages = req.files.map((file) => file.filename);
-    // console.log(secondaryImages);
     try {
       const newVehicle = new Vehicle({
         name,
@@ -71,7 +65,6 @@ module.exports = {
         secondaryImages,
       });
       const savedVehicle = await newVehicle.save();
-      // console.log(savedVehicle);
       res.status(201).json(savedVehicle);
     } catch (error) {
       console.log(error.message);

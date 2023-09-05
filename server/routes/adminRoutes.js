@@ -27,9 +27,14 @@ const upload = multer({ storage: storage });
 router.post("/register", registerUser);
 router.post("/login", authUser);
 router.post("/addVehicle", upload.array("recfile", 4), addVehicle);
-router.get("/getVehicles", getAllVehicles);
-router.get("/getVehicle/:id", getVehicle);
-router.patch("/editVehicle/:id",upload.array("recfile", 4), editVehicle);
-router.delete("/deleteVehicle/:id", deleteVehicle);
+router.get("/getVehicles", verifyToken, getAllVehicles);
+router.get("/getVehicle/:id", verifyToken, getVehicle);
+router.patch(
+  "/editVehicle/:id",
+  verifyToken,
+  upload.array("recfile", 4),
+  editVehicle
+);
+router.delete("/deleteVehicle/:id", verifyToken, deleteVehicle);
 
 module.exports = router;

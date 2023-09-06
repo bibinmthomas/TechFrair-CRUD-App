@@ -88,8 +88,7 @@ export const login = (email, password) => async (dispatch) => {
 export const addVehicle = (formData) => async (dispatch, getState) => {
   try {
     const userInfo = getState();
-    console.log(userInfo.login.userInfo.token);
-
+    // console.log(userInfo.login.userInfo.token);
     const config = {
       headers: {
         "Content-type": "multipart/form-data",
